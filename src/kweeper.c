@@ -8,7 +8,7 @@
 #include <grid.h>
 #include <display.h>
 
-#define VERSION "0.0.0"
+#define VERSION "0.1"
 
 int main(int argc, char *argv[]) {
 	create_context(argc, argv);
