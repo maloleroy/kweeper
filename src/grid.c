@@ -64,16 +64,23 @@ void grid_handle_left_click(struct xy pos, grid* g) {
 void grid_handle_right_click(struct xy pos, grid* g) {
     struct ij loc = cell_of_click(pos, g);
     if (!is_none_ij(loc)) {
-        CELL(g, loc).status = FLAGGED;
         EXTRACT_CELL(loc);
-        if (i > 0 && j > 0) g->cells[i-1][j-1].flagged++;
-        if (i > 0) g->cells[i-1][j].flagged++;
-        if (i > 0 && j < SIZE-1) g->cells[i-1][j+1].flagged++;
-        if (j < SIZE-1) g->cells[i][j+1].flagged++;
-        if (i < SIZE-1 && j < SIZE-1) g->cells[i+1][j+1].flagged++;
-        if (i < SIZE-1) g->cells[i+1][j].flagged++;
-        if (i < SIZE-1 && j > 0) g->cells[i+1][j-1].flagged++;
-        if (j > 0) g->cells[i][j-1].flagged++;
+        int delta = 0;
+        if (CELL(g, loc).status == COVERED) {
+            CELL(g, loc).status = FLAGGED;
+            delta = 1;
+        } else if (CELL(g, loc).status == FLAGGED) {
+            CELL(g, loc).status = COVERED;
+            delta = -1;
+        }
+        if (i > 0 && j > 0) g->cells[i-1][j-1].flagged += delta;
+        if (i > 0) g->cells[i-1][j].flagged += delta;
+        if (i > 0 && j < SIZE-1) g->cells[i-1][j+1].flagged += delta;
+        if (j < SIZE-1) g->cells[i][j+1].flagged += delta;
+        if (i < SIZE-1 && j < SIZE-1) g->cells[i+1][j+1].flagged += delta;
+        if (i < SIZE-1) g->cells[i+1][j].flagged += delta;
+        if (i < SIZE-1 && j > 0) g->cells[i+1][j-1].flagged += delta;
+        if (j > 0) g->cells[i][j-1].flagged += delta;
     }
 }
 
@@ -97,8 +104,7 @@ static void grid_uncover_cell(struct ij loc, grid* g) {
 }
 
 static void propagate_uncover_cell(struct ij loc, grid* g) {
-    int i = loc.i;
-    int j = loc.j;
+    EXTRACT_CELL(loc);
     if (CELL(g, loc).status != COVERED) return;
     grid_uncover_cell(loc, g);
     if (CELL(g, loc).value == 0) {
