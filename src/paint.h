@@ -14,6 +14,7 @@ void paint_rect(SDL_Rect r, rgba color);
 void paint_rect_anchor(struct xy anchor, int width, int height, rgba color);
 void paint_square_anchor(struct xy anchor, int side, rgba color);
 void paint_dot(struct xy anchor, rgba color);
+void paint_dot4(struct xy anchor, char* str, rgba color);
 
 /* Apply a shift to the position */
 struct xy delta_x(struct xy pos, int delta);

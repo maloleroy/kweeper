@@ -10,11 +10,13 @@ static void display_progress_bar(grid* g);
 static int progress_bar_filling_size(grid *g);
 static struct xy progress_bar_filling_anchor(grid *g);
 static rgba progress_bar_color(grid* g);
+static void display_time(grid* g);
 
 void display_everything(grid* g) {
     display_background();
     display_grid(g);
     display_progress_bar(g);
+    display_time(g);
 }
 
 static void display_background(void) {
@@ -49,7 +51,11 @@ static void display_cell(grid* g, struct ij loc) {
         case FLAGGED:
             paint_square_anchor(anchor, g->cell_size, nord[2]);
             int s = (g->cell_size - dot_size()) / 2;
-            paint_dot(delta_xy(anchor, s, s), nord[11]);
+            if (g->status == LOST && CELL(g, loc).value != MINE) {
+                paint_dot(delta_xy(anchor, s, s), nord[uncovered_cell_color_number(g, loc)]);
+            } else {
+                paint_dot(delta_xy(anchor, s, s), nord[11]);
+            }
             break;
     }
 }
@@ -142,11 +148,22 @@ static struct xy progress_bar_filling_anchor(grid *g) {
 }
 
 static rgba progress_bar_color(grid* g) {
-    if (g->uncovered < SIZE*SIZE - NB_MINES) {
-        return nord[14];
+    switch (g->status) {
+        case ONGOING:
+            return nord[14];
+        case LOST:
+            return nord[11];
+        case WON:
+            return nord[8];
     }
-    if (g->status == LOST) {
-        return nord[11];
+    return nord[8]; // for warnings
+}
+
+void display_time(grid* g) {
+    if (g->status == WON) {
+        char time_string[10];
+        sprintf(time_string, "%.1f", (float)g->game_time / 1000);
+        struct xy anchor = delta_xy(g->anchor, (g->side - 20*dot_size()) / 2, g->side + 2*dot_size());
+        paint_dot4(anchor, time_string, nord[0]);
     }
-    return nord[8];
 }

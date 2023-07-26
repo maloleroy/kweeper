@@ -60,14 +60,14 @@ static void drop_mines(grid* g) {
         int j = array[k].j;
         g->cells[i][j].value = -1;
         // all neighbours, clockwise from top left
-        if (i > 0 && j > 0 && g->cells[i-1][j-1].value != -1) g->cells[i-1][j-1].value++;
-        if (i > 0 && g->cells[i-1][j].value != -1) g->cells[i-1][j].value++;
-        if (i > 0 && j < SIZE-1 && g->cells[i-1][j+1].value != -1) g->cells[i-1][j+1].value++;
-        if (j < SIZE-1 && g->cells[i][j+1].value != -1) g->cells[i][j+1].value++;
-        if (i < SIZE-1 && j < SIZE-1 && g->cells[i+1][j+1].value != -1) g->cells[i+1][j+1].value++;
-        if (i < SIZE-1 && g->cells[i+1][j].value != -1) g->cells[i+1][j].value++;
-        if (i < SIZE-1 && j > 0 && g->cells[i+1][j-1].value != -1) g->cells[i+1][j-1].value++;
-        if (j > 0 && g->cells[i][j-1].value != -1) g->cells[i][j-1].value++;
+        if (i > 0 && j > 0 && g->cells[i-1][j-1].value != MINE) g->cells[i-1][j-1].value++;
+        if (i > 0 && g->cells[i-1][j].value != MINE) g->cells[i-1][j].value++;
+        if (i > 0 && j < SIZE-1 && g->cells[i-1][j+1].value != MINE) g->cells[i-1][j+1].value++;
+        if (j < SIZE-1 && g->cells[i][j+1].value != MINE) g->cells[i][j+1].value++;
+        if (i < SIZE-1 && j < SIZE-1 && g->cells[i+1][j+1].value != MINE) g->cells[i+1][j+1].value++;
+        if (i < SIZE-1 && g->cells[i+1][j].value != MINE) g->cells[i+1][j].value++;
+        if (i < SIZE-1 && j > 0 && g->cells[i+1][j-1].value != MINE) g->cells[i+1][j-1].value++;
+        if (j > 0 && g->cells[i][j-1].value != MINE) g->cells[i][j-1].value++;
     }
 }
 
@@ -123,14 +123,13 @@ static void grid_uncover_cell(struct ij loc, grid* g) {
         if (CELL(g, loc).value == MINE) {
             CELL(g, loc).status = EXPLODED;
             g->status = LOST;
-            // TODO: if is a mine, put an end to game
+            grid_reveal_all_cells(g);
         } else {
             g->uncovered++;
             CELL(g, loc).status = UNCOVERED;
-            if (g->uncovered == SIZE*SIZE - NB_MINES) {
+            if (g->status == ONGOING && g->uncovered == SIZE*SIZE - NB_MINES) {
                 g->status = WON;
                 g->game_time = SDL_GetTicks() - g->game_time;
-                printf("Time: %d\n", g->game_time);
             }
         }
     }
