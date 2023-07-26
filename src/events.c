@@ -77,7 +77,11 @@ static void toggle_pause(run_status* rs) {
 }
 
 static void handle_click(Uint8 button, struct xy pos, grid* g) {
-    grid_handle_click(pos, g);
+    if (button == SDL_BUTTON_LEFT) {
+        grid_handle_left_click(pos, g);
+    } else if (button == SDL_BUTTON_RIGHT) {
+        grid_handle_right_click(pos, g);
+    }
 }
 
 

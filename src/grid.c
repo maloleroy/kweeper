@@ -50,14 +50,30 @@ static void drop_mines(grid* g) {
         if (i < SIZE-1 && j < SIZE-1 && g->cells[i+1][j+1].value != -1) g->cells[i+1][j+1].value++;
         if (i < SIZE-1 && g->cells[i+1][j].value != -1) g->cells[i+1][j].value++;
         if (i < SIZE-1 && j > 0 && g->cells[i+1][j-1].value != -1) g->cells[i+1][j-1].value++;
-        if (j < SIZE-1 && g->cells[i][j-1].value != -1) g->cells[i][j-1].value++;
+        if (j > 0 && g->cells[i][j-1].value != -1) g->cells[i][j-1].value++;
     }
 }
 
-void grid_handle_click(struct xy pos, grid* g) {
+void grid_handle_left_click(struct xy pos, grid* g) {
     struct ij loc = cell_of_click(pos, g);
     if (!is_none_ij(loc)) {
         propagate_uncover_cell(loc, g);
+    }
+}
+
+void grid_handle_right_click(struct xy pos, grid* g) {
+    struct ij loc = cell_of_click(pos, g);
+    if (!is_none_ij(loc)) {
+        CELL(g, loc).status = FLAGGED;
+        EXTRACT_CELL(loc);
+        if (i > 0 && j > 0) g->cells[i-1][j-1].flagged++;
+        if (i > 0) g->cells[i-1][j].flagged++;
+        if (i > 0 && j < SIZE-1) g->cells[i-1][j+1].flagged++;
+        if (j < SIZE-1) g->cells[i][j+1].flagged++;
+        if (i < SIZE-1 && j < SIZE-1) g->cells[i+1][j+1].flagged++;
+        if (i < SIZE-1) g->cells[i+1][j].flagged++;
+        if (i < SIZE-1 && j > 0) g->cells[i+1][j-1].flagged++;
+        if (j > 0) g->cells[i][j-1].flagged++;
     }
 }
 
@@ -93,7 +109,7 @@ static void propagate_uncover_cell(struct ij loc, grid* g) {
         if (i < SIZE-1 && j < SIZE-1) propagate_uncover_cell((struct ij){i+1, j+1}, g);
         if (i < SIZE-1) propagate_uncover_cell((struct ij){i+1, j}, g);
         if (i < SIZE-1 && j > 0) propagate_uncover_cell((struct ij){i+1, j-1}, g);
-        if (j < SIZE-1) propagate_uncover_cell((struct ij){i, j-1}, g);
+        if (j > 0) propagate_uncover_cell((struct ij){i, j-1}, g);
     }
 }
 

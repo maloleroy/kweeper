@@ -44,6 +44,7 @@ typedef struct {
 } grid;
 
 #define CELL(g, loc) (g->cells)[loc.i][loc.j]
+#define EXTRACT_CELL(loc) int i = loc.i, j = loc.j;
 
 /* Create a unique new grid */
 grid* create_grid(void);
@@ -57,8 +58,11 @@ struct xy get_cell_anchor(struct ij loc, grid* g);
 /* Return the size of a dot, in pixels */
 int dot_size(void);
 
-/* Handle a general click event that might have effects on the grid */
-void grid_handle_click(struct xy pos, grid* g);
+/* Handle a left click event that might have effects on the grid */
+void grid_handle_left_click(struct xy pos, grid* g);
+
+/* Handle a right click event that might have effects on the grid */
+void grid_handle_right_click(struct xy pos, grid* g);
 
 /* Reveal all cells (including yet hidden) */
 void grid_reveal_all_cells(grid* g);
