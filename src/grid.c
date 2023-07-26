@@ -4,6 +4,7 @@
 static void drop_mines(grid* g);
 static void grid_uncover_cell(struct ij loc, grid* g);
 static void propagate_uncover_cell(struct ij loc, grid* g);
+static void fast_clear(struct ij loc, grid* g);
 static struct ij cell_of_click(struct xy pos, grid* g);
 static struct xy grid_anchor(void);
 static int grid_side(void);
@@ -57,7 +58,16 @@ static void drop_mines(grid* g) {
 void grid_handle_left_click(struct xy pos, grid* g) {
     struct ij loc = cell_of_click(pos, g);
     if (!is_none_ij(loc)) {
-        propagate_uncover_cell(loc, g);
+        switch (CELL(g, loc).status) {
+            case COVERED:
+                propagate_uncover_cell(loc, g);
+                break;
+            case UNCOVERED:
+                fast_clear(loc, g);
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -116,6 +126,20 @@ static void propagate_uncover_cell(struct ij loc, grid* g) {
         if (i < SIZE-1) propagate_uncover_cell((struct ij){i+1, j}, g);
         if (i < SIZE-1 && j > 0) propagate_uncover_cell((struct ij){i+1, j-1}, g);
         if (j > 0) propagate_uncover_cell((struct ij){i, j-1}, g);
+    }
+}
+
+static void fast_clear(struct ij loc, grid* g) {
+    EXTRACT_CELL(loc);
+    if (CELL(g, loc).value == CELL(g, loc).flagged) {
+        if (i > 0 && j > 0 && g->cells[i-1][j-1].status != FLAGGED) propagate_uncover_cell((struct ij){i-1, j-1}, g);
+        if (i > 0 && g->cells[i-1][j].status != FLAGGED) propagate_uncover_cell((struct ij){i-1, j}, g);
+        if (i > 0 && j < SIZE-1 && g->cells[i-1][j+1].status != FLAGGED) propagate_uncover_cell((struct ij){i-1, j+1}, g);
+        if (j < SIZE-1 && g->cells[i][j+1].status != FLAGGED) propagate_uncover_cell((struct ij){i, j+1}, g);
+        if (i < SIZE-1 && j < SIZE-1 && g->cells[i+1][j+1].status != FLAGGED) propagate_uncover_cell((struct ij){i+1, j+1}, g);
+        if (i < SIZE-1 && g->cells[i+1][j].status != FLAGGED) propagate_uncover_cell((struct ij){i+1, j}, g);
+        if (i < SIZE-1 && j > 0 && g->cells[i+1][j-1].status != FLAGGED) propagate_uncover_cell((struct ij){i+1, j-1}, g);
+        if (j > 0 && g->cells[i][j-1].status != FLAGGED) propagate_uncover_cell((struct ij){i, j-1}, g);
     }
 }
 
