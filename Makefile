@@ -20,7 +20,7 @@ obj/%.o: src/%.c
 	@$(CC) -I./src -c $< -o $@ $(CFLAGS)
 
 bin/test: test/test.c $(OBJ_FILES)
-	@$(CC) "test/test.c" /home/malo/Bureau/confer/obj/confer.o $(OBJ_FILES) $(CFLAGS) -I./test -I/home/malo/Bureau/confer/src/ -o "bin/test"
+	@$(CC) "test/test.c" /home/fluteur/Desktop/confer/obj/confer.o $(OBJ_FILES) $(CFLAGS) -I./test -I/home/fluteur/Desktop/confer/src/ -o "bin/test"
 
 clean:
 	rm ${TARGETS}
