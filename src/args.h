@@ -8,7 +8,7 @@
 		printf(format __VA_OPT__(,) __VA_ARGS__); \
 	}
 
-const char *help_message;
+extern const char *help_message;
 
 bool contains_char(char const *str, const char c);
 

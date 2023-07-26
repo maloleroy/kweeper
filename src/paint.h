@@ -7,7 +7,7 @@ typedef struct {
 	unsigned char r, g, b, a;
 } rgba;
 
-const rgba nord[16];
+extern const rgba nord[16];
 
 void change_color(rgba color);
 void paint_rect(SDL_Rect r, rgba color);
