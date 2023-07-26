@@ -27,6 +27,18 @@ grid* create_grid(void) {
     return &_g;
 }
 
+void grid_begin_game(struct xy pos, grid* g, run_status* rs) {
+    struct ij loc = cell_of_click(pos, g);
+    EXTRACT_CELL(loc);
+    if (!is_none_ij(loc)) {
+        restart_new_game(g);
+        while (CELL(g, loc).value != 0) {
+            restart_new_game(g);
+        }
+        rs->virgin = SDL_FALSE;
+    }
+}
+
 void restart_new_game(grid* g) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {

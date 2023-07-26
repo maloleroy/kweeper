@@ -4,7 +4,7 @@
 
 static void handle_event(SDL_Event event, grid* g, run_status* rs);
 static void handle_key_press(SDL_Keycode code, grid* g, run_status* rs);
-static void handle_click(Uint8 button, struct xy pos, grid* g);
+static void handle_click(Uint8 button, struct xy pos, grid* g, run_status* rs);
 static void toggle_pause(run_status* rs);
 static void handle_window_event(SDL_Event event, grid* g);
 
@@ -14,6 +14,7 @@ run_status *create_run_status(void) {
         .paused = SDL_FALSE,
         .pausable = SDL_FALSE,
         .refresh = SDL_TRUE,
+        .virgin = SDL_TRUE,
     };
     return &_rs;
 }
@@ -35,7 +36,7 @@ static void handle_event(SDL_Event event, grid* g, run_status* rs) {
             break;
         case SDL_MOUSEBUTTONUP:
             rs->refresh = SDL_TRUE;
-            handle_click(event.button.button, (struct xy){event.button.x, event.button.y}, g);
+            handle_click(event.button.button, (struct xy){event.button.x, event.button.y}, g, rs);
             break;
         case SDL_KEYDOWN:
             rs->refresh = SDL_TRUE;
@@ -56,6 +57,7 @@ static void handle_key_press(SDL_Keycode code, grid* g, run_status* rs) {
             toggle_pause(rs);
             break;
         case SDLK_r:
+            rs->virgin = SDL_TRUE;
             restart_new_game(g);
             break;
         case SDLK_s:
@@ -76,8 +78,11 @@ static void toggle_pause(run_status* rs) {
     }
 }
 
-static void handle_click(Uint8 button, struct xy pos, grid* g) {
+static void handle_click(Uint8 button, struct xy pos, grid* g, run_status* rs) {
     if (button == SDL_BUTTON_LEFT) {
+        if (rs->virgin) {
+            grid_begin_game(pos, g, rs);
+        }
         grid_handle_left_click(pos, g);
     } else if (button == SDL_BUTTON_RIGHT) {
         grid_handle_right_click(pos, g);

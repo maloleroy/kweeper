@@ -50,7 +50,6 @@ static void display_cell(grid* g, struct ij loc) {
 }
 
 static int uncovered_cell_color_number(grid* g, struct ij loc) {
-    if (loc.i == 0 && loc.j == 1) return 8;
     switch (CELL(g, loc).value) {
         case 0:
             return 4;
@@ -97,6 +96,11 @@ static void display_cell_value(grid* g, struct ij loc) {
             paint_dot(delta_xy(a, s+2*d, s+2*d), nord[0]);
             break;
         case 5:
+            paint_dot(delta_xy(a, s, s), nord[0]);
+            paint_dot(delta_xy(a, s-2*d, s+2*d), nord[0]);
+            paint_dot(delta_xy(a, s+2*d, s-2*d), nord[0]);
+            paint_dot(delta_xy(a, s-2*d, s-2*d), nord[0]);
+            paint_dot(delta_xy(a, s+2*d, s+2*d), nord[0]);
             break;
         case 6:
             break;

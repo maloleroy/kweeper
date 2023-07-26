@@ -6,6 +6,10 @@
 #define SIZE 8 // the size of the grid
 #define NB_MINES 10 // # the initial number of mines
 
+typedef struct {
+    SDL_bool launched, paused, pausable, refresh, virgin;
+} run_status;
+
 /* Generic type to store 2-dimension coordinates */
 struct xy {
 	int x /* x pos, width or x text-margin */;
@@ -48,6 +52,9 @@ typedef struct {
 
 /* Create a unique new grid */
 grid* create_grid(void);
+
+/* Begin a new game whose first click is at pos */
+void grid_begin_game(struct xy pos, grid* g, run_status* rs);
 
 /* Restart, begin a new game */
 void restart_new_game(grid* g);
