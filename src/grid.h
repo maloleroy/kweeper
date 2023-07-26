@@ -45,6 +45,7 @@ typedef struct {
 	int side; // size of the entire grid
 	int cell_size; // size of one cell
 	int cell_margin; // margin between cells
+	int uncovered; // total uncovered cells
 } grid;
 
 #define CELL(g, loc) (g->cells)[loc.i][loc.j]

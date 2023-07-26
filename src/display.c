@@ -6,10 +6,15 @@ static void display_grid(grid* g);
 static void display_cell(grid* g, struct ij loc);
 static int uncovered_cell_color_number(grid* g, struct ij loc);
 static void display_cell_value(grid* g, struct ij loc);
+static void display_progress_bar(grid* g);
+static int progress_bar_filling_size(grid *g);
+static struct xy progress_bar_filling_anchor(grid *g);
+static rgba progress_bar_color(grid* g);
 
 void display_everything(grid* g) {
     display_background();
     display_grid(g);
+    display_progress_bar(g);
 }
 
 static void display_background(void) {
@@ -109,4 +114,36 @@ static void display_cell_value(grid* g, struct ij loc) {
         case 8:
             break;
     }
+}
+
+static void display_progress_bar(grid* g) {
+    struct xy bar_anchor = delta_x(g->anchor, -g->cell_size);
+    int d = 2*g->cell_margin;
+    struct xy bar_filling_anchor = progress_bar_filling_anchor(g);
+    paint_rect_anchor(delta_xy(bar_anchor, -d, -d), 2*d, g->side, nord[0]);
+    paint_rect_anchor(bar_anchor, 2*d, g->side, nord[1]);
+    paint_rect_anchor(bar_filling_anchor,
+        g->cell_margin/4,
+        progress_bar_filling_size(g),
+        progress_bar_color(g));
+}
+
+static int progress_bar_filling_size(grid *g) {
+    if (g->uncovered < SIZE*SIZE - NB_MINES) {
+        return (9 * g->side * g->uncovered) / (10 * (SIZE*SIZE - NB_MINES));
+    }
+    return (9 * g->side) / 10;
+}
+
+static struct xy progress_bar_filling_anchor(grid *g) {
+    return delta_xy(g->anchor,
+        -g->cell_size + 9 * g->cell_margin / 5,
+        19 * g->side / 20 - progress_bar_filling_size(g));
+}
+
+static rgba progress_bar_color(grid* g) {
+    if (g->uncovered < SIZE*SIZE - NB_MINES) {
+        return nord[14];
+    }
+    return nord[8];
 }

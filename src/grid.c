@@ -17,6 +17,7 @@ SDL_bool is_none_ij(struct ij loc) {
 
 grid* create_grid(void) {
     static grid _g;
+    _g.uncovered = 0;
     update_grid_size(&_g);
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
@@ -29,7 +30,6 @@ grid* create_grid(void) {
 
 void grid_begin_game(struct xy pos, grid* g, run_status* rs) {
     struct ij loc = cell_of_click(pos, g);
-    EXTRACT_CELL(loc);
     if (!is_none_ij(loc)) {
         restart_new_game(g);
         while (CELL(g, loc).value != 0) {
@@ -40,6 +40,7 @@ void grid_begin_game(struct xy pos, grid* g, run_status* rs) {
 }
 
 void restart_new_game(grid* g) {
+    g->uncovered = 0;
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             g->cells[i][j] = (struct cell){.loc={i, j}, .value=0, .flagged=0, .status=COVERED};
@@ -120,6 +121,7 @@ static void grid_uncover_cell(struct ij loc, grid* g) {
             CELL(g, loc).status = EXPLODED;
             // TODO: if is a mine, put an end to game
         } else {
+            g->uncovered++;
             CELL(g, loc).status = UNCOVERED;
         }
     }
