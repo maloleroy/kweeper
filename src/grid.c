@@ -18,6 +18,7 @@ SDL_bool is_none_ij(struct ij loc) {
 grid* create_grid(void) {
     static grid _g;
     _g.uncovered = 0;
+    _g.status = ONGOING;
     update_grid_size(&_g);
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
@@ -36,11 +37,13 @@ void grid_begin_game(struct xy pos, grid* g, run_status* rs) {
             restart_new_game(g);
         }
         rs->virgin = SDL_FALSE;
+        g->game_time = SDL_GetTicks();
     }
 }
 
 void restart_new_game(grid* g) {
     g->uncovered = 0;
+    g->status = ONGOING;
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             g->cells[i][j] = (struct cell){.loc={i, j}, .value=0, .flagged=0, .status=COVERED};
@@ -119,10 +122,16 @@ static void grid_uncover_cell(struct ij loc, grid* g) {
     if (CELL(g, loc).status == COVERED) {
         if (CELL(g, loc).value == MINE) {
             CELL(g, loc).status = EXPLODED;
+            g->status = LOST;
             // TODO: if is a mine, put an end to game
         } else {
             g->uncovered++;
             CELL(g, loc).status = UNCOVERED;
+            if (g->uncovered == SIZE*SIZE - NB_MINES) {
+                g->status = WON;
+                g->game_time = SDL_GetTicks() - g->game_time;
+                printf("Time: %d\n", g->game_time);
+            }
         }
     }
 }

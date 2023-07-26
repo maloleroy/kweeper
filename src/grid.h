@@ -30,6 +30,7 @@ SDL_bool is_none_ij(struct ij);
 #define MINE -1
 
 typedef enum {COVERED, UNCOVERED, FLAGGED, EXPLODED} cell_status;
+typedef enum {ONGOING, LOST, WON} grid_status;
 
 /* Stores all content regarding a cell in the grid */
 struct cell {
@@ -46,6 +47,8 @@ typedef struct {
 	int cell_size; // size of one cell
 	int cell_margin; // margin between cells
 	int uncovered; // total uncovered cells
+	grid_status status;
+	int game_time;
 } grid;
 
 #define CELL(g, loc) (g->cells)[loc.i][loc.j]

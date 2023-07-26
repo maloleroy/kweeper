@@ -145,5 +145,8 @@ static rgba progress_bar_color(grid* g) {
     if (g->uncovered < SIZE*SIZE - NB_MINES) {
         return nord[14];
     }
+    if (g->status == LOST) {
+        return nord[11];
+    }
     return nord[8];
 }
