@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 const char *help_message =
-	"Kweeper, minesweeper game in development written in C created by Sap.\n"
+	"Kweeper, minesweeper game in development written in C created by Malo Leroy.\n"
 	"\nCommand line options\n"
 	"  -d, --defsize    Uses the default size for the program (1920 by 1080 px),\n"
 	"                    instead of fullscreen\n"
@@ -16,7 +16,7 @@ const char *help_message =
 	"  s                Virtually clicks on all cells\n"
 	"  r                Starta a new game\n"
 	"\nAbout\n"
-	"  -  Written by Sap\n"
+	"  -  Written by Malo Leroy\n"
 	"  -  Licensed GPLv3 : Visit https://www.gnu.org/licenses/gpl-3.0.html\n"
 	"  -  Coded in C language and compiled (if you did not compiled the code\n"
 	"      yourself) with GCC 9.4.0\n";
