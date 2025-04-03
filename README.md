@@ -2,6 +2,8 @@
 
 Kweeper is a 2D minesweeper I wrote in C using SDL 2 back in 2023. It uses my own rudimentary testing library [Confer](https://github.com/maloleroy/confer) to generate the Makefile and run the tests!
 
+![Screenshot](Screenshot.png "Screenshot")
+
 ## Installation
 
 ### Dependecies
@@ -17,6 +19,14 @@ Here, having SDL 2 installed means having `sdl2-config` in your path, since `Mak
 Just use Make!
 ```bash
 make bin/kweeper
+```
+
+## Testing
+
+You should probably update the `Makefile` to match you Confer installation path. Then, simply build and run
+```bash
+make bin/test
+./bin/test
 ```
 
 ## Usage
